@@ -40,7 +40,17 @@ class Agent():
         if np.random.random() > self.epsilon:
             state = T.tensor([observation], dtype=T.float).to(self.q_eval.device)
             _, advantage = self.q_eval.forward(state)
-            action = T.argmax(advantage).item()
+
+            adv_list = advantage.tolist()[0]
+
+            action = legal_moves[0]
+            prob = adv_list[action]
+
+            for move in legal_moves:
+                if adv_list[move] > prob:
+                    action = move
+
+            # action = T.argmax(advantage).item()
 
         else:
             action = np.random.choice(legal_moves)

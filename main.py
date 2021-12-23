@@ -39,16 +39,10 @@ if __name__ == '__main__':
         while not done:
             action = agent.choose_action(observation, env.legal_actions)
 
-            if action not in env.legal_actions:
-                done = True
-                score -= 1
-                n_steps += 1
-                break
-
             # Each state and action
             observation_, reward, done, info = env.step(action)
 
-            score += reward * 50
+            score += reward
 
             if not load_checkpoint:
                 agent.store_transition(observation, action, reward, observation_, done)
