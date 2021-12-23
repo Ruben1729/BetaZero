@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 
-CHANNELS = 512
+CHANNELS = 256
 
 
 class DeepQNetwork(nn.Module):
@@ -14,7 +14,7 @@ class DeepQNetwork(nn.Module):
         self.checkpoint_dir = chkpt_dir
         self.checkpoint_file = os.path.join(self.checkpoint_dir, name)
 
-        self.conv1 = nn.Conv2d(input_dims[0], 512, 3, stride=1, padding=1)
+        self.conv1 = nn.Conv2d(input_dims[0], CHANNELS, 3, stride=1, padding=1)
         self.conv2 = nn.Conv2d(CHANNELS, CHANNELS, 3, stride=1, padding=1)
         self.conv3 = nn.Conv2d(CHANNELS, CHANNELS, 3, stride=1)
         self.conv4 = nn.Conv2d(CHANNELS, CHANNELS, 3, stride=1)
@@ -26,18 +26,18 @@ class DeepQNetwork(nn.Module):
 
         fc_input_dims = self.calculate_input_dims(input_dims)
 
-        self.fc1 = nn.Linear(fc_input_dims, 1024)
+        self.fc1 = nn.Linear(fc_input_dims, CHANNELS * 2)
 
-        self.fc_bn1 = nn.BatchNorm1d(1024)
+        self.fc_bn1 = nn.BatchNorm1d(CHANNELS * 2)
 
-        self.fc2 = nn.Linear(1024, 512)
-        self.fc_bn2 = nn.BatchNorm1d(512)
+        self.fc2 = nn.Linear(CHANNELS * 2, CHANNELS)
+        self.fc_bn2 = nn.BatchNorm1d(CHANNELS)
 
         # Actions
-        self.A = nn.Linear(512, n_actions)
+        self.A = nn.Linear(CHANNELS, n_actions)
 
         # Value
-        self.V = nn.Linear(512, 1)
+        self.V = nn.Linear(CHANNELS, 1)
 
         self.optimizer = optim.Adam(self.parameters(), lr=lr)
         self.loss = nn.MSELoss()
