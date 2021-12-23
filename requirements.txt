@@ -1,0 +1,5 @@
+gym==0.17.3
+gym_chess==0.1.1
+matplotlib==3.3.4
+numpy==1.20.1
+torch==1.10.1+cu102
