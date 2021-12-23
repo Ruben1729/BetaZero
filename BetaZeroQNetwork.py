@@ -27,7 +27,6 @@ class DeepQNetwork(nn.Module):
         fc_input_dims = self.calculate_input_dims(input_dims)
 
         self.fc1 = nn.Linear(fc_input_dims, CHANNELS * 2)
-
         self.fc_bn1 = nn.BatchNorm1d(CHANNELS * 2)
 
         self.fc2 = nn.Linear(CHANNELS * 2, CHANNELS)
@@ -60,10 +59,10 @@ class DeepQNetwork(nn.Module):
         s = F.relu(self.bn3(self.conv3(s)))
         s = F.relu(self.bn4(self.conv4(s)))
 
-        conv_state = s.view(s.size()[0], -1)
+        s = s.view(s.size()[0], -1)
 
-        s = F.dropout(F.relu(self.fc_bn1(self.fc1(conv_state))), p=0.3)
-        s = F.dropout(F.relu(self.fc_bn2(self.fc2(s))), p=0.3)
+        s = F.relu(self.fc1(s))
+        s = F.relu(self.fc2(s))
 
         v = self.V(s)
         a = self.A(s)
